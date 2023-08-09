@@ -1,0 +1,4 @@
+[core]
+    remote = aws-moate
+['remote "aws-moate"']
+    url = s3://digit-recognizer-904452660299

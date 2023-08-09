@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "app"  # change to your model name
+version = "0.1.0"
+description = ""
+authors = ["shaun-moate <shaun.moate@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+jupyter = "^1.0.0"
+dvc = {extras = ["s3"], version = "^3.13.3"}
+pandas = "^2.0.3"
+matplotlib = "^3.7.2"
+numpy = "^1.25.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
