@@ -1,0 +1,22 @@
+base:
+  project: digit_recognisation
+  raw_data_dir: data/raw/
+  processed_data_dir: data/processed/
+  target: label
+  random_seed: 13
+
+train:
+  model_dir: models
+  model_path: models/dr-model.joblib
+  model_type: 2d_convalutional
+  struct:
+    inputs_x: 28
+    inputs_y: 28
+    layer_1: 25
+    layer_2: 25
+    outputs: 10
+  act_func: relu
+
+
+
+
