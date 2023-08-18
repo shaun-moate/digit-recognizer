@@ -5,8 +5,8 @@ from src.utils.load_params import load_params
 
 def process_raw_data(params):
     test, train = load_data(params)
-    test, train = tensorfy_data(test, train, params)
-    save_processed_data(test, train, params)
+    test, train, labels = tensorfy_data(test, train, params)
+    save_processed_data(test, train, labels, params)
     print("Processing Complete...")
 
 def load_data(params):
@@ -20,16 +20,18 @@ def load_data(params):
 def tensorfy_data(test, train, params):
     print("Converting to Tensor...")
     test_tensor = torch.tensor(test)
-    train_tensor = torch.tensor(train)
+    train_tensor = torch.tensor(train[:, 1:])
+    train_labels = torch.tensor(train[:, 0])
     print("Reshaping Tensors...")
     test_reshaped = test_tensor.resize_(len(test_tensor), params.train.struct.inputs_x, params.train.struct.inputs_y)
     train_reshaped = test_tensor.resize_(len(train_tensor), 1, params.train.struct.inputs_x, params.train.struct.inputs_y)
-    return test_reshaped, train_reshaped
+    return test_reshaped, train_reshaped, train_labels
 
-def save_processed_data(test, train, params):
+def save_processed_data(test, train, labels, params):
     print("Saving Tensors to File...")
     torch.save(test, params.base.processed_data_dir + "test_processed.pt")
     torch.save(train, params.base.processed_data_dir + "train_processed.pt")
+    torch.save(labels, params.base.processed_data_dir + "labels_processed.pt")
 
 
 if __name__ == "__main__":
