@@ -22,19 +22,45 @@ stages:
         data_processing:
           split: 0.1
     outs:
-    - path: data/processed
+    - path: data/processed/test_processed.pt
       hash: md5
-      md5: d751713988987e9331980363e24189ce.dir
-      size: 0
-      nfiles: 0
+      md5: 90c0a529d6f622e33802cd55bac868cf
+      size: 87808768
+    - path: data/processed/train_x_processed.pt
+      hash: md5
+      md5: 851e129b0d03c52477df36873dc663b1
+      size: 118541577
+    - path: data/processed/train_y_processed.pt
+      hash: md5
+      md5: 486b3dfaf9d8ae44140c445b449ab2a3
+      size: 303177
+    - path: data/processed/valid_x_processed.pt
+      hash: md5
+      md5: d0cd99039a2faa398d6cb5d5214d09bf
+      size: 13171977
+    - path: data/processed/valid_y_processed.pt
+      hash: md5
+      md5: 606b246fc6aa77b668afd2553c3ccd76
+      size: 34377
   train:
     cmd: python -m src.stages.train -c "params.yaml"
     deps:
-    - path: data/processed
+    - path: data/processed/train_x_processed.pt
       hash: md5
-      md5: d751713988987e9331980363e24189ce.dir
-      size: 0
-      nfiles: 0
+      md5: 851e129b0d03c52477df36873dc663b1
+      size: 118541577
+    - path: data/processed/train_y_processed.pt
+      hash: md5
+      md5: 486b3dfaf9d8ae44140c445b449ab2a3
+      size: 303177
+    - path: data/processed/valid_x_processed.pt
+      hash: md5
+      md5: d0cd99039a2faa398d6cb5d5214d09bf
+      size: 13171977
+    - path: data/processed/valid_y_processed.pt
+      hash: md5
+      md5: 606b246fc6aa77b668afd2553c3ccd76
+      size: 34377
     - path: src/stages/train.py
       hash: md5
       md5: 037b6ec9380224e0ebca22a5d042f755
@@ -60,11 +86,14 @@ stages:
             outputs: 10
           learning_rate: 0.01
           momentum: 0.5
-          n_epochs: 10
+          n_epochs: 1
           log_interval: 10
     outs:
-    - path: models
+    - path: models/model.pth
       hash: md5
-      md5: d751713988987e9331980363e24189ce.dir
-      size: 0
-      nfiles: 0
+      md5: 8cba5dc7cc062a2c8f239cc8d19a6991
+      size: 89851
+    - path: models/optimizer.pth
+      hash: md5
+      md5: 4391f7496a0e4d0da29850f64f5965c0
+      size: 89955

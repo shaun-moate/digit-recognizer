@@ -8,15 +8,23 @@ stages:
     - base
     - data_processing
     outs:
-    - data/processed
+    - data/processed/train_x_processed.pt
+    - data/processed/train_y_processed.pt
+    - data/processed/valid_x_processed.pt
+    - data/processed/valid_y_processed.pt
+    - data/processed/test_processed.pt
   train:
     cmd: python -m src.stages.train -c "params.yaml"
     deps:
     - src/stages/train.py
-    - data/processed
+    - data/processed/train_x_processed.pt
+    - data/processed/train_y_processed.pt
+    - data/processed/valid_x_processed.pt
+    - data/processed/valid_y_processed.pt
     params:
     - base
     - train
     outs:
-    - models
+    - models/model.pth
+    - models/optimizer.pth
 
