@@ -20,7 +20,7 @@ stages:
           processed_data_dir: data/processed/
           random_seed: 13
         data_processing:
-          split: 0.2
+          split: 0.1
     outs:
     - path: data/processed
       hash: md5
@@ -60,7 +60,7 @@ stages:
             outputs: 10
           learning_rate: 0.01
           momentum: 0.5
-          n_epochs: 5
+          n_epochs: 10
           log_interval: 10
     outs:
     - path: models
