@@ -2,20 +2,27 @@ base:
   project: digit_recognisation
   raw_data_dir: data/raw/
   processed_data_dir: data/processed/
-  target: label
   random_seed: 13
 
+data_processing:
+  split: 0.2
+
 train:
-  model_dir: models
-  model_path: models/dr-model.joblib
-  model_type: 2d_convalutional
+  cudnn_enabled: False
+  model_path: models/models.pth
+  optimizer_path: models/optimizer.pth
+  data:
+    batch_size_train: 64
+    batch_size_validation: 100
+    shuffle: True
   struct:
-    inputs_x: 28
-    inputs_y: 28
     layer_1: 25
     layer_2: 25
     outputs: 10
-  act_func: relu
+  learning_rate: 0.01
+  momentum: 0.5
+  n_epochs: 5
+  log_interval: 10
 
 
 

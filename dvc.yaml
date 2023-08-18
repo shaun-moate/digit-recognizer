@@ -1,0 +1,22 @@
+stages:
+  data_processing:
+    cmd: python -m src.stages.data_processing -c "params.yaml"
+    deps:
+    - src/stages/data_processing.py
+    - data/raw
+    params:
+    - base
+    - data_processing
+    outs:
+    - data/processed
+  train:
+    cmd: python -m src.stages.train -c "params.yaml"
+    deps:
+    - src/stages/train.py
+    - data/processed
+    params:
+    - base
+    - train
+    outs:
+    - models
+

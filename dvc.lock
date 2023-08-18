@@ -1,0 +1,70 @@
+schema: '2.0'
+stages:
+  data_processing:
+    cmd: python -m src.stages.data_processing -c "params.yaml"
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: 8daaa1f9a8ca03fe219dc2b3f5882ff5.dir
+      size: 128134246
+      nfiles: 3
+    - path: src/stages/data_processing.py
+      hash: md5
+      md5: 68facb3322b46ade6b3eec3162895deb
+      size: 2918
+    params:
+      params.yaml:
+        base:
+          project: digit_recognisation
+          raw_data_dir: data/raw/
+          processed_data_dir: data/processed/
+          random_seed: 13
+        data_processing:
+          split: 0.2
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+  train:
+    cmd: python -m src.stages.train -c "params.yaml"
+    deps:
+    - path: data/processed
+      hash: md5
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    - path: src/stages/train.py
+      hash: md5
+      md5: 037b6ec9380224e0ebca22a5d042f755
+      size: 4784
+    params:
+      params.yaml:
+        base:
+          project: digit_recognisation
+          raw_data_dir: data/raw/
+          processed_data_dir: data/processed/
+          random_seed: 13
+        train:
+          cudnn_enabled: false
+          model_path: models/models.pth
+          optimizer_path: models/optimizer.pth
+          data:
+            batch_size_train: 64
+            batch_size_validation: 100
+            shuffle: true
+          struct:
+            layer_1: 25
+            layer_2: 25
+            outputs: 10
+          learning_rate: 0.01
+          momentum: 0.5
+          n_epochs: 5
+          log_interval: 10
+    outs:
+    - path: models
+      hash: md5
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
