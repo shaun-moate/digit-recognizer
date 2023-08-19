@@ -5,7 +5,7 @@ base:
   random_seed: 13
 
 data_processing:
-  split: 0.1
+  split: 0.2
 
 train:
   cudnn_enabled: False
@@ -16,9 +16,10 @@ train:
     batch_size_validation: 100
     shuffle: True
   struct:
-    layer_1: 25
-    layer_2: 25
-    outputs: 10
+    conv1: 10
+    conv2: 20
+    linear1: 50
+    linear2: 10
   learning_rate: 0.005
   momentum: 0.5
   n_epochs: 10

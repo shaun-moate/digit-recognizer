@@ -2,3 +2,6 @@
 
 dvc/push:
 	export POETRY_DOTENV_LOCATION=.env && poetry run -vvv python local-setup.py && poetry run -vvv dvc push
+
+dvc/pull:
+	export POETRY_DOTENV_LOCATION=.env && poetry run -vvv python local-setup.py && poetry run -vvv dvc pull
