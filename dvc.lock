@@ -27,7 +27,7 @@ stages:
           processed_data_dir: data/processed/
           random_seed: 13
         data_processing:
-          split: 0.2
+          split: 0.3
     outs:
     - path: data/processed/test_processed.pt
       hash: md5
@@ -35,39 +35,39 @@ stages:
       size: 87808768
     - path: data/processed/train_x_processed.pt
       hash: md5
-      md5: 56f6f2efa51f1503a6c59cbae648b384
-      size: 105370377
+      md5: fa332fec0df223fbd44719ffdda52724
+      size: 92199177
     - path: data/processed/train_y_processed.pt
       hash: md5
-      md5: 6c516bbab86ffa4aa83deeca4b380d52
-      size: 269577
+      md5: d922eeb2304477ee918ebf1fb3f15913
+      size: 235977
     - path: data/processed/valid_x_processed.pt
       hash: md5
-      md5: cbf383debac042debce808b7bd485e12
-      size: 26343177
+      md5: 31b60f6091db97b9e1cbb0b4693b21e7
+      size: 39514377
     - path: data/processed/valid_y_processed.pt
       hash: md5
-      md5: 14c0a2a0061c9803dbe3589727f54a2c
-      size: 67977
+      md5: b8120dc27a315d703cebd63f46744f7d
+      size: 101577
   train:
     cmd: python -m src.stages.train -c "params.yaml"
     deps:
     - path: data/processed/train_x_processed.pt
       hash: md5
-      md5: 56f6f2efa51f1503a6c59cbae648b384
-      size: 105370377
+      md5: fa332fec0df223fbd44719ffdda52724
+      size: 92199177
     - path: data/processed/train_y_processed.pt
       hash: md5
-      md5: 6c516bbab86ffa4aa83deeca4b380d52
-      size: 269577
+      md5: d922eeb2304477ee918ebf1fb3f15913
+      size: 235977
     - path: data/processed/valid_x_processed.pt
       hash: md5
-      md5: cbf383debac042debce808b7bd485e12
-      size: 26343177
+      md5: 31b60f6091db97b9e1cbb0b4693b21e7
+      size: 39514377
     - path: data/processed/valid_y_processed.pt
       hash: md5
-      md5: 14c0a2a0061c9803dbe3589727f54a2c
-      size: 67977
+      md5: b8120dc27a315d703cebd63f46744f7d
+      size: 101577
     - path: src/stages/train.py
       hash: md5
       md5: 825e61dee8d6a757ce91ae040f09f426
@@ -92,16 +92,16 @@ stages:
             conv2: 20
             linear1: 50
             linear2: 10
-          learning_rate: 0.005
+          learning_rate: 0.003
           momentum: 0.5
-          n_epochs: 10
+          n_epochs: 25
           log_interval: 10
     outs:
     - path: models/model.pth
       hash: md5
-      md5: 41ab1b2740bf9798b544e55d4472ba7c
+      md5: dc55bdafbca4c3f53daf2f598d8acc98
       size: 89851
     - path: models/optimizer.pth
       hash: md5
-      md5: 8939830a40fe7a58e374e74217e8ea90
+      md5: 7c4e979e890f2a96d33e4c5b8868c219
       size: 89955
