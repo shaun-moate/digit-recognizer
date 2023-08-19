@@ -92,16 +92,16 @@ stages:
             conv2: 20
             linear1: 50
             linear2: 10
-          learning_rate: 0.003
+          learning_rate: 0.001
           momentum: 0.5
-          n_epochs: 25
+          n_epochs: 100
           log_interval: 10
     outs:
     - path: models/model.pth
       hash: md5
-      md5: dc55bdafbca4c3f53daf2f598d8acc98
+      md5: 995beba54c5b21bfa72632c91aac8274
       size: 89851
     - path: models/optimizer.pth
       hash: md5
-      md5: 7c4e979e890f2a96d33e4c5b8868c219
+      md5: e1e594d8e03fdea7c1083c5156c1c146
       size: 89955
