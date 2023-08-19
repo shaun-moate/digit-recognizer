@@ -84,16 +84,16 @@ stages:
             layer_1: 25
             layer_2: 25
             outputs: 10
-          learning_rate: 0.01
+          learning_rate: 0.005
           momentum: 0.5
-          n_epochs: 1
+          n_epochs: 10
           log_interval: 10
     outs:
     - path: models/model.pth
       hash: md5
-      md5: 8cba5dc7cc062a2c8f239cc8d19a6991
+      md5: 9829ded2a01a48571d94a1de66a4b506
       size: 89851
     - path: models/optimizer.pth
       hash: md5
-      md5: 4391f7496a0e4d0da29850f64f5965c0
+      md5: f1d5b7080123d966694b298ad148e544
       size: 89955
