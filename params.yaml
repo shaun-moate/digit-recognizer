@@ -9,7 +9,7 @@ data_processing:
 
 train:
   cudnn_enabled: False
-  model_path: models/models.pth
+  model_path: models/model.pth
   optimizer_path: models/optimizer.pth
   data:
     batch_size_train: 64
@@ -22,9 +22,8 @@ train:
     linear2: 10
   learning_rate: 0.001
   momentum: 0.5
-  n_epochs: 100
+  n_epochs: 10
   log_interval: 10
 
-
-
-
+eval:
+  metrics_path: metrics.json

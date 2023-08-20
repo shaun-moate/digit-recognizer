@@ -70,8 +70,8 @@ stages:
       size: 101577
     - path: src/stages/train.py
       hash: md5
-      md5: 825e61dee8d6a757ce91ae040f09f426
-      size: 4942
+      md5: 25a3d03d2555c8a529693a09b5c09ac1
+      size: 4952
     params:
       params.yaml:
         base:
@@ -81,7 +81,7 @@ stages:
           random_seed: 13
         train:
           cudnn_enabled: false
-          model_path: models/models.pth
+          model_path: models/model.pth
           optimizer_path: models/optimizer.pth
           data:
             batch_size_train: 64
@@ -94,14 +94,47 @@ stages:
             linear2: 10
           learning_rate: 0.001
           momentum: 0.5
-          n_epochs: 100
+          n_epochs: 10
           log_interval: 10
     outs:
     - path: models/model.pth
       hash: md5
-      md5: 995beba54c5b21bfa72632c91aac8274
+      md5: 84b5b773de67212c230b31fde0525cfc
       size: 89851
     - path: models/optimizer.pth
       hash: md5
-      md5: e1e594d8e03fdea7c1083c5156c1c146
+      md5: ecb8bfa023b19ab6f3dc04bac145f0d1
       size: 89955
+  eval:
+    cmd: python -m src.stages.eval -c "params.yaml"
+    deps:
+    - path: models/model.pth
+      hash: md5
+      md5: 84b5b773de67212c230b31fde0525cfc
+      size: 89851
+    params:
+      params.yaml:
+        eval:
+          metrics_path: metrics.json
+        train:
+          cudnn_enabled: false
+          model_path: models/model.pth
+          optimizer_path: models/optimizer.pth
+          data:
+            batch_size_train: 64
+            batch_size_validation: 100
+            shuffle: true
+          struct:
+            conv1: 10
+            conv2: 20
+            linear1: 50
+            linear2: 10
+          learning_rate: 0.001
+          momentum: 0.5
+          n_epochs: 10
+          log_interval: 10
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: 0e3987f95d63dbdec85a0c69a4273aa9
+      size: 55

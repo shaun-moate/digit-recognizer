@@ -15,6 +15,7 @@ stages:
     - data/processed/valid_x_processed.pt
     - data/processed/valid_y_processed.pt
     - data/processed/test_processed.pt
+
   train:
     cmd: python -m src.stages.train -c "params.yaml"
     deps:
@@ -30,3 +31,13 @@ stages:
     - models/model.pth
     - models/optimizer.pth
 
+  eval:
+    cmd: python -m src.stages.eval -c "params.yaml"
+    deps:
+    - models/model.pth
+    params:
+    - train
+    - eval
+    metrics:
+    - metrics.json:
+        cache: false

@@ -70,8 +70,8 @@ def train(epoch):
       train_losses.append(loss.item())
       train_counter.append(
         (batch_idx*64) + ((epoch-1)*len(train_loader.dataset)))
-      torch.save(network.state_dict(), 'models/model.pth')
-      torch.save(optimizer.state_dict(), 'models/optimizer.pth')
+      torch.save(network.state_dict(), params.train.model_path)
+      torch.save(optimizer.state_dict(), params.train.optimizer_path)
 
 def validate():
   network.eval()
