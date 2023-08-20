@@ -34,6 +34,7 @@ stages:
   eval:
     cmd: python -m src.stages.eval -c "params.yaml"
     deps:
+    - src/stages/eval.py
     - models/model.pth
     params:
     - train

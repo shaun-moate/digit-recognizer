@@ -94,24 +94,28 @@ stages:
             linear2: 10
           learning_rate: 0.001
           momentum: 0.5
-          n_epochs: 10
+          n_epochs: 5
           log_interval: 10
     outs:
     - path: models/model.pth
       hash: md5
-      md5: 84b5b773de67212c230b31fde0525cfc
+      md5: ddf723bbc6de4f822c426debe0449773
       size: 89851
     - path: models/optimizer.pth
       hash: md5
-      md5: ecb8bfa023b19ab6f3dc04bac145f0d1
+      md5: e07521903f98f262733a70f8a7b8b1a1
       size: 89955
   eval:
     cmd: python -m src.stages.eval -c "params.yaml"
     deps:
     - path: models/model.pth
       hash: md5
-      md5: 84b5b773de67212c230b31fde0525cfc
+      md5: ddf723bbc6de4f822c426debe0449773
       size: 89851
+    - path: src/stages/eval.py
+      hash: md5
+      md5: 9eed45fa79eebf68d334a81664617677
+      size: 2093
     params:
       params.yaml:
         eval:
@@ -131,10 +135,10 @@ stages:
             linear2: 10
           learning_rate: 0.001
           momentum: 0.5
-          n_epochs: 10
+          n_epochs: 5
           log_interval: 10
     outs:
     - path: metrics.json
       hash: md5
-      md5: 0e3987f95d63dbdec85a0c69a4273aa9
+      md5: 02d71397575c28e8e45f0f56f9cf1fa7
       size: 55

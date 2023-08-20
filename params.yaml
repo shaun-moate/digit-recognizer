@@ -22,7 +22,7 @@ train:
     linear2: 10
   learning_rate: 0.001
   momentum: 0.5
-  n_epochs: 10
+  n_epochs: 5
   log_interval: 10
 
 eval:
