@@ -39,7 +39,7 @@ jobs:
           poetry run dvc push
 
           # create cml report
-          # TODO implement a comment -> 'This model has an average loss: {} and accuracy: {}''
-          # TODO implement a matplotlib of loss over epochs (in train.py) -> read into cml
-          echo "Hello, World!" >> report.md
+          echo "## Accuracy" >> report.md
+          cat metrics.json >> report.md
+          echo '![](reports/results.png)' >> report.md
           cml comment create report.md

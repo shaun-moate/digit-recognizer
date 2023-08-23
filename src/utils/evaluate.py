@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 import json
 
-def evaluate(network, loader, params, test_losses=[], store=False):
+def evaluate(network, loader, params, results=[], store=False):
     network.eval()
     test_loss = 0
     correct = 0
@@ -13,7 +13,7 @@ def evaluate(network, loader, params, test_losses=[], store=False):
             pred = output.data.max(1, keepdim=True)[1]
             correct += pred.eq(target.data.view_as(pred)).sum()
     test_loss /= len(loader.dataset)
-    test_losses.append(test_loss)
+    results.append((test_loss, correct / len(loader.dataset)))
 
     print('\nTest set: Avg. loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
       test_loss, correct, len(loader.dataset),
