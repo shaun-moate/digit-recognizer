@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.utils.data.dataloader import default_collate
 import argparse
 import json
 
@@ -14,6 +15,7 @@ def load_evaluation_data():
     evaluation_loader = torch.utils.data.DataLoader(
                       validation_data,
                       batch_size=100,
+                      collate_fn=lambda x: tuple(x_.to(params.base.device) for x_ in default_collate(x)),
                       shuffle=True)
     return evaluation_loader
 
@@ -43,6 +45,7 @@ if __name__ == "__main__":
 
     evaluation_loader = load_evaluation_data()
     network = Net(params)
+    network.to(params.base.device)
     network.load_state_dict(torch.load(params.train.model_path))
     evaluate(params)
     print("---------------------------------------------------------------")

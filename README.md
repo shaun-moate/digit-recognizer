@@ -8,8 +8,10 @@ Make sure to set up your `.env` file with the following:
 - `AWS_ACCESS_KEY_ID`:  public key for aws
 - `AWS_SECRET_ACCESS_KEY`:  private key for aws
 
-Now! Get import environment variable set-up.  Have made this easy... all you need to run `make local/envs`.  Have a look at `Makefile` to see what it does.
+If you need to get the data or want to ensure you have the latest data simply run `make dvc/pull`
 
-Lastly, if you need to get the data or want to ensure you have the latest data simply run `dvc pull`
+Lastly, to run an experiment from e2e simply run `dvc exp run -f`
+
+If you would like to change the parameters of the experiment, either edit `params.yaml` or run `dvc exp run -S <insert_params_you_want_to_change>`
 
 Should be ready to go!

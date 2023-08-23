@@ -3,6 +3,7 @@ base:
   raw_data_dir: data/raw/
   processed_data_dir: data/processed/
   random_seed: 13
+  device: mps
 
 data_processing:
   split: 0.3
@@ -22,7 +23,7 @@ train:
     linear2: 10
   learning_rate: 0.001
   momentum: 0.5
-  n_epochs: 5
+  n_epochs: 50
   log_interval: 10
 
 eval:

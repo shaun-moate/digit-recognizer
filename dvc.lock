@@ -17,8 +17,8 @@ stages:
       size: 76775041
     - path: src/stages/data_processing.py
       hash: md5
-      md5: 68facb3322b46ade6b3eec3162895deb
-      size: 2918
+      md5: 90810ae24d96f52d06238e4e38fae711
+      size: 3042
     params:
       params.yaml:
         base:
@@ -26,6 +26,7 @@ stages:
           raw_data_dir: data/raw/
           processed_data_dir: data/processed/
           random_seed: 13
+          device: mps
         data_processing:
           split: 0.3
     outs:
@@ -35,7 +36,7 @@ stages:
       size: 87808768
     - path: data/processed/train_x_processed.pt
       hash: md5
-      md5: fa332fec0df223fbd44719ffdda52724
+      md5: a86ce3d871571ac48d42fd96fdd25b2f
       size: 92199177
     - path: data/processed/train_y_processed.pt
       hash: md5
@@ -43,7 +44,7 @@ stages:
       size: 235977
     - path: data/processed/valid_x_processed.pt
       hash: md5
-      md5: 31b60f6091db97b9e1cbb0b4693b21e7
+      md5: 3166d48b937d15c06f518d5328726ca4
       size: 39514377
     - path: data/processed/valid_y_processed.pt
       hash: md5
@@ -54,7 +55,7 @@ stages:
     deps:
     - path: data/processed/train_x_processed.pt
       hash: md5
-      md5: fa332fec0df223fbd44719ffdda52724
+      md5: a86ce3d871571ac48d42fd96fdd25b2f
       size: 92199177
     - path: data/processed/train_y_processed.pt
       hash: md5
@@ -62,7 +63,7 @@ stages:
       size: 235977
     - path: data/processed/valid_x_processed.pt
       hash: md5
-      md5: 31b60f6091db97b9e1cbb0b4693b21e7
+      md5: 3166d48b937d15c06f518d5328726ca4
       size: 39514377
     - path: data/processed/valid_y_processed.pt
       hash: md5
@@ -70,8 +71,8 @@ stages:
       size: 101577
     - path: src/stages/train.py
       hash: md5
-      md5: 25a3d03d2555c8a529693a09b5c09ac1
-      size: 4952
+      md5: 728b4e6b6ea9e02affc0d0b0d37a15ba
+      size: 5253
     params:
       params.yaml:
         base:
@@ -79,6 +80,7 @@ stages:
           raw_data_dir: data/raw/
           processed_data_dir: data/processed/
           random_seed: 13
+          device: mps
         train:
           cudnn_enabled: false
           model_path: models/model.pth
@@ -94,28 +96,28 @@ stages:
             linear2: 10
           learning_rate: 0.001
           momentum: 0.5
-          n_epochs: 5
+          n_epochs: 50
           log_interval: 10
     outs:
     - path: models/model.pth
       hash: md5
-      md5: ddf723bbc6de4f822c426debe0449773
+      md5: 5a8cf5935ec5e2bf771eebb4c45a5547
       size: 89851
     - path: models/optimizer.pth
       hash: md5
-      md5: e07521903f98f262733a70f8a7b8b1a1
+      md5: abe15103daf4f7b364cb3d3e8be392d5
       size: 89955
   eval:
     cmd: python -m src.stages.eval -c "params.yaml"
     deps:
     - path: models/model.pth
       hash: md5
-      md5: ddf723bbc6de4f822c426debe0449773
+      md5: 5a8cf5935ec5e2bf771eebb4c45a5547
       size: 89851
     - path: src/stages/eval.py
       hash: md5
-      md5: 9eed45fa79eebf68d334a81664617677
-      size: 2093
+      md5: 527a73a36b3449979ebf745a1646d2b7
+      size: 2290
     params:
       params.yaml:
         eval:
@@ -135,10 +137,10 @@ stages:
             linear2: 10
           learning_rate: 0.001
           momentum: 0.5
-          n_epochs: 5
+          n_epochs: 50
           log_interval: 10
     outs:
     - path: metrics.json
       hash: md5
-      md5: 02d71397575c28e8e45f0f56f9cf1fa7
+      md5: 80acf17d245379b48a3032c4ccdd2b66
       size: 55

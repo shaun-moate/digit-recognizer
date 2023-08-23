@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from torch.utils.data.dataloader import default_collate
 import argparse
 
 from src.utils.load_params import load_params
@@ -43,7 +44,8 @@ def load_data(params):
     print("Generating data and creating batches for training...")
     train_loader = torch.utils.data.DataLoader(
                       train_data,
-                      batch_size=params.train.data.batch_size_train, 
+                      batch_size=params.train.data.batch_size_train,
+                      collate_fn=lambda x: tuple(x_.to(params.base.device) for x_ in default_collate(x)),
                       shuffle=params.train.data.shuffle)
 
     print("Loading the processed validation data...")
@@ -51,7 +53,8 @@ def load_data(params):
     print("Generating data and creating batches for validation...")
     validation_loader = torch.utils.data.DataLoader(
                       validation_data,
-                      batch_size=params.train.data.batch_size_validation, 
+                      batch_size=params.train.data.batch_size_validation,
+                      collate_fn=lambda x: tuple(x_.to(params.base.device) for x_ in default_collate(x)),
                       shuffle=params.train.data.shuffle)
     return train_loader, validation_loader
 
@@ -107,6 +110,7 @@ if __name__ == "__main__":
     learning_rate = params.train.learning_rate
     momentum = params.train.momentum
     network = Net(params)
+    network.to(params.base.device)
     optimizer = optim.SGD(network.parameters(), lr=learning_rate,
                           momentum=momentum)
 
