@@ -3,6 +3,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import argparse
+import csv
+import numpy as np
+import matplotlib.pyplot as plt
 
 from src.utils.load_params import load_params
 from src.utils.data_loader import data_loader
@@ -97,15 +100,34 @@ if __name__ == "__main__":
     n_epochs = params.train.n_epochs
     train_losses = []
     train_counter = []
-    test_losses = []
+    results = []
     test_counter = [i*len(train_loader.dataset) for i in range(n_epochs + 1)]
 
     log_interval = params.train.log_interval
 
-    evaluate(network, validation_loader, params, test_losses)
+    evaluate(network, validation_loader, params, results)
     for epoch in range(1, n_epochs + 1):
       train(epoch)
-      evaluate(network, validation_loader, params, test_losses)
+      evaluate(network, validation_loader, params, results)
+
+    store_results = []
+    for epoch, (loss, accuracy) in enumerate(results):
+      store_results.append([epoch, loss, accuracy.item()])
+
+    with open('reports/results.csv', 'w+', newline='') as file:
+      writer = csv.writer(file)
+      writer.writerow(["epoch", "loss", "accuracy"]) # headers
+      writer.writerows(store_results) # Use writerows for nested list
+
+    x = np.loadtxt("reports/results.csv",
+                     delimiter=",", skiprows=1, usecols=(0), dtype=np.int32)
+    y = np.loadtxt("reports/results.csv",
+                     delimiter=",", skiprows=1, usecols=(2), dtype=np.float32)
+    plt.title("Accuracy over Epochs")
+    plt.xlabel("Epochs")
+    plt.ylabel("Accuracy")
+    plt.plot(x, y)
+    plt.savefig("reports/results.png")
 
     print("---------------------------------------------------------------")
     print(" TRAINING - COMPLETE ------------------------------------------")

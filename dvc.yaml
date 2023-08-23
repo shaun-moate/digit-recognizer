@@ -27,6 +27,19 @@ stages:
     params:
     - base
     - train
+    plots:
+    - reports/results.csv:
+        x: epoch
+        y: accuracy
+        title: Accuracy over Epochs
+        x_label: Epoch
+        y_label: Accuracy
+    - reports/results.csv:
+        x: epoch
+        y: loss
+        title: Loss over Epochs
+        x_label: Epoch
+        y_label: Loss
     outs:
     - models/model.pth
     - models/optimizer.pth
