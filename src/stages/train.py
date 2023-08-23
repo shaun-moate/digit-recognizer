@@ -38,14 +38,14 @@ class Net(nn.Module):
         x = self.fc2(x)
         return F.log_softmax(x, dim = 1)
 
-def load_data(params):
+def load_data(params, device):
     print("Loading the processed training data...")
     train_data = Dataset("train_x_processed.pt", "train_y_processed.pt", params)
     print("Generating data and creating batches for training...")
     train_loader = torch.utils.data.DataLoader(
                       train_data,
                       batch_size=params.train.data.batch_size_train,
-                      collate_fn=lambda x: tuple(x_.to(params.base.device) for x_ in default_collate(x)),
+                      collate_fn=lambda x: tuple(x_.to(device) for x_ in default_collate(x)),
                       shuffle=params.train.data.shuffle)
 
     print("Loading the processed validation data...")
@@ -54,7 +54,7 @@ def load_data(params):
     validation_loader = torch.utils.data.DataLoader(
                       validation_data,
                       batch_size=params.train.data.batch_size_validation,
-                      collate_fn=lambda x: tuple(x_.to(params.base.device) for x_ in default_collate(x)),
+                      collate_fn=lambda x: tuple(x_.to(device) for x_ in default_collate(x)),
                       shuffle=params.train.data.shuffle)
     return train_loader, validation_loader
 
@@ -105,7 +105,14 @@ if __name__ == "__main__":
     torch.backends.cudnn.enabled = params.train.cudnn_enabled
     torch.manual_seed(params.base.random_seed)
 
-    train_loader, validation_loader = load_data(params)
+    if torch.backends.mps.is_available():
+        device = torch.device("mps")
+    elif torch.cuda.is_available():
+        device = torch.device("cuda")
+    else:
+        device = torch.device("cpu")
+
+    train_loader, validation_loader = load_data(params, device)
 
     learning_rate = params.train.learning_rate
     momentum = params.train.momentum

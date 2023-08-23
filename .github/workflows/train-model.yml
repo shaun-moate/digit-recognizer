@@ -1,0 +1,46 @@
+name: train-model
+on:
+  push:
+    - "data/**"
+    - "src/**"
+    - "params.yaml"
+    - "dvc.*"
+
+jobs:
+  train-model:
+    runs-on: ubuntu-latest
+    environment: cloud
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.even.pull_request.head.sha }}
+      - uses: iterative/setup-cml@v1
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+      - name: set-up git user
+        run: cml ci
+        env:
+          REPO_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: install poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+      - name: train model
+        env:
+          REPO_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          poetry run dvc pull
+          poetry run dvc exp run
+          poetry run dvc push
+
+          # create cml report
+          echo "Hello, World!" >> report.md
+          cml comment create report.md

@@ -8,14 +8,14 @@ import json
 from src.utils.load_params import load_params
 from src.stages.train import Net, Dataset
 
-def load_evaluation_data():
+def load_evaluation_data(device):
     print("Loading the processed validation data...")
     validation_data = Dataset("valid_x_processed.pt", "valid_y_processed.pt", params)
     print("Generating data and creating batches for validation...")
     evaluation_loader = torch.utils.data.DataLoader(
                       validation_data,
                       batch_size=100,
-                      collate_fn=lambda x: tuple(x_.to(params.base.device) for x_ in default_collate(x)),
+                      collate_fn=lambda x: tuple(x_.to(device) for x_ in default_collate(x)),
                       shuffle=True)
     return evaluation_loader
 
@@ -43,9 +43,16 @@ if __name__ == "__main__":
     args = arg_parser.parse_args()
     params = load_params(args.params)
 
-    evaluation_loader = load_evaluation_data()
+    if torch.backends.mps.is_available():
+        device = torch.device("mps")
+    elif torch.cuda.is_available():
+        device = torch.device("cuda")
+    else:
+        device = torch.device("cpu")
+
+    evaluation_loader = load_evaluation_data(device)
     network = Net(params)
-    network.to(params.base.device)
+    network.to(device)
     network.load_state_dict(torch.load(params.train.model_path))
     evaluate(params)
     print("---------------------------------------------------------------")

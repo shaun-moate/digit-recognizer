@@ -18,12 +18,12 @@ def split_data(train, params):
 
     return train[:s_size-v_size], train[s_size-v_size:]
 
-def tensorfy_data(train, validation, test, params):
+def tensorfy_data(train, validation, test, device):
     print("Converting to Tensor...")
-    train_tensor = torch.tensor(train[:, 1:], device=params.base.device)
-    train_labels = torch.tensor(train[:, 0], device=params.base.device).type(torch.LongTensor)
-    validation_tensor = torch.tensor(validation[:, 1:], device=params.base.device)
-    validation_labels = torch.tensor(validation[:, 0], device=params.base.device).type(torch.LongTensor)
+    train_tensor = torch.tensor(train[:, 1:], device=device)
+    train_labels = torch.tensor(train[:, 0], device=device).type(torch.LongTensor)
+    validation_tensor = torch.tensor(validation[:, 1:], device=device)
+    validation_labels = torch.tensor(validation[:, 0], device=device).type(torch.LongTensor)
     test_tensor = torch.tensor(test)
     print("Reshaping Tensors...")
     train_reshaped = train_tensor.resize_(len(train_tensor), 1, 28, 28)
@@ -49,10 +49,17 @@ if __name__ == "__main__":
     args = arg_parser.parse_args()
     params = load_params(args.params)
 
+    if torch.backends.mps.is_available():
+        device = torch.device("mps")
+    elif torch.cuda.is_available():
+        device = torch.device("cuda")
+    else:
+        device = torch.device("cpu")
+
     np.random.seed(params.base.random_seed)
     train, test = load_data(params)
     train, validation = split_data(train, params)
-    train_x, train_y, valid_x, valid_y, test = tensorfy_data(train, validation, test, params)
+    train_x, train_y, valid_x, valid_y, test = tensorfy_data(train, validation, test, device)
     save_processed_data(train_x, train_y, valid_x, valid_y, test, params)
     print("---------------------------------------------------------------")
     print(" DATA PROCESSING - COMPLETE -----------------------------------")
