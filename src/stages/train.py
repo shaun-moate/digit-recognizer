@@ -2,10 +2,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from torch.utils.data.dataloader import default_collate
 import argparse
 
 from src.utils.load_params import load_params
+from src.utils.data_loader import data_loader
+from src.utils.evaluate import evaluate
 
 class Dataset(torch.utils.data.Dataset):
   def __init__(self, data, labels, params):
@@ -41,21 +42,10 @@ class Net(nn.Module):
 def load_data(params, device):
     print("Loading the processed training data...")
     train_data = Dataset("train_x_processed.pt", "train_y_processed.pt", params)
-    print("Generating data and creating batches for training...")
-    train_loader = torch.utils.data.DataLoader(
-                      train_data,
-                      batch_size=params.train.data.batch_size_train,
-                      collate_fn=lambda x: tuple(x_.to(device) for x_ in default_collate(x)),
-                      shuffle=params.train.data.shuffle)
-
+    train_loader = data_loader(train_data, params, device)
     print("Loading the processed validation data...")
     validation_data = Dataset("valid_x_processed.pt", "valid_y_processed.pt", params)
-    print("Generating data and creating batches for validation...")
-    validation_loader = torch.utils.data.DataLoader(
-                      validation_data,
-                      batch_size=params.train.data.batch_size_validation,
-                      collate_fn=lambda x: tuple(x_.to(device) for x_ in default_collate(x)),
-                      shuffle=params.train.data.shuffle)
+    validation_loader = data_loader(validation_data, params, device)
     return train_loader, validation_loader
 
 def train(epoch):
@@ -75,23 +65,6 @@ def train(epoch):
         (batch_idx*64) + ((epoch-1)*len(train_loader.dataset)))
       torch.save(network.state_dict(), params.train.model_path)
       torch.save(optimizer.state_dict(), params.train.optimizer_path)
-
-def validate():
-  network.eval()
-  test_loss = 0
-  correct = 0
-  with torch.no_grad():
-    for data, target in validation_loader:
-      output = network(data)
-      test_loss += F.nll_loss(output, target, reduction='sum').item()
-      pred = output.data.max(1, keepdim=True)[1]
-      correct += pred.eq(target.data.view_as(pred)).sum()
-  test_loss /= len(validation_loader.dataset)
-  test_losses.append(test_loss)
-  print('\nTest set: Avg. loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
-    test_loss, correct, len(validation_loader.dataset),
-    100. * correct / len(validation_loader.dataset)))
-
 
 if __name__ == "__main__":
     print("---------------------------------------------------------------")
@@ -129,10 +102,10 @@ if __name__ == "__main__":
 
     log_interval = params.train.log_interval
 
-    validate()
+    evaluate(network, validation_loader, params, test_losses)
     for epoch in range(1, n_epochs + 1):
       train(epoch)
-      validate()
+      evaluate(network, validation_loader, params, test_losses)
 
     print("---------------------------------------------------------------")
     print(" TRAINING - COMPLETE ------------------------------------------")

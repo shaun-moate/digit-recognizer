@@ -71,8 +71,8 @@ stages:
       size: 101577
     - path: src/stages/train.py
       hash: md5
-      md5: b6988d3f7d14a939cb184780269df900
-      size: 5446
+      md5: be79fa31ea130f5fce19f72226d9b6c1
+      size: 4341
     params:
       params.yaml:
         base:
@@ -116,8 +116,8 @@ stages:
       size: 89851
     - path: src/stages/eval.py
       hash: md5
-      md5: 01ba4d318075dddedc5d1211468b04cc
-      size: 2479
+      md5: 09b4204a28dd1215ed36d444a56d6d4f
+      size: 1599
     params:
       params.yaml:
         eval:
