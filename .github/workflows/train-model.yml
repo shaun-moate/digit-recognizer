@@ -27,6 +27,7 @@ jobs:
       - name: install poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
+          poetry install
       - name: train model
         env:
           REPO_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
