@@ -1,6 +1,12 @@
 name: train-model
 
-on: [push]
+on:
+  push:
+    paths:
+      - "src/**"
+      - "data/**"
+      - "params.yaml"
+      - "dvc.yaml"
 
 jobs:
   train-model:
