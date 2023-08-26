@@ -28,7 +28,7 @@ stages:
           random_seed: 13
           device: mps
         data_processing:
-          split: 0.3
+          split: 0.1
     outs:
     - path: data/processed/test_processed.pt
       hash: md5
@@ -36,39 +36,39 @@ stages:
       size: 87808768
     - path: data/processed/train_x_processed.pt
       hash: md5
-      md5: a86ce3d871571ac48d42fd96fdd25b2f
-      size: 92199177
+      md5: e2f8d0784801348b40598a4c918ed213
+      size: 118541577
     - path: data/processed/train_y_processed.pt
       hash: md5
-      md5: d922eeb2304477ee918ebf1fb3f15913
-      size: 235977
+      md5: 486b3dfaf9d8ae44140c445b449ab2a3
+      size: 303177
     - path: data/processed/valid_x_processed.pt
       hash: md5
-      md5: 3166d48b937d15c06f518d5328726ca4
-      size: 39514377
+      md5: f0cd5e53a290bec980faa151ae92af15
+      size: 13171977
     - path: data/processed/valid_y_processed.pt
       hash: md5
-      md5: b8120dc27a315d703cebd63f46744f7d
-      size: 101577
+      md5: 606b246fc6aa77b668afd2553c3ccd76
+      size: 34377
   train:
     cmd: python -m src.stages.train -c "params.yaml"
     deps:
     - path: data/processed/train_x_processed.pt
       hash: md5
-      md5: a86ce3d871571ac48d42fd96fdd25b2f
-      size: 92199177
+      md5: e2f8d0784801348b40598a4c918ed213
+      size: 118541577
     - path: data/processed/train_y_processed.pt
       hash: md5
-      md5: d922eeb2304477ee918ebf1fb3f15913
-      size: 235977
+      md5: 486b3dfaf9d8ae44140c445b449ab2a3
+      size: 303177
     - path: data/processed/valid_x_processed.pt
       hash: md5
-      md5: 3166d48b937d15c06f518d5328726ca4
-      size: 39514377
+      md5: f0cd5e53a290bec980faa151ae92af15
+      size: 13171977
     - path: data/processed/valid_y_processed.pt
       hash: md5
-      md5: b8120dc27a315d703cebd63f46744f7d
-      size: 101577
+      md5: 606b246fc6aa77b668afd2553c3ccd76
+      size: 34377
     - path: src/stages/train.py
       hash: md5
       md5: 66fe582dbfa1847492b2940dc63c2236
@@ -96,27 +96,35 @@ stages:
             linear2: 10
           learning_rate: 0.001
           momentum: 0.5
-          n_epochs: 25
+          n_epochs: 300
           log_interval: 10
     outs:
     - path: models/model.pth
       hash: md5
-      md5: 87d4713af608b3cd3b3ceed367a4bac7
+      md5: 36cbe9638d288b5eab5528e79319b7ac
       size: 89851
     - path: models/optimizer.pth
       hash: md5
-      md5: 93a3b4e13465af925e52b65be26d50c5
+      md5: 89cb5559d9d607a9ffd8bbb3c546145f
       size: 89955
     - path: reports/results.csv
       hash: md5
-      md5: aa02701c21ff3149c00895c33420159b
-      size: 1115
+      md5: e6b24b364720e04a297d658706f87881
+      size: 13188
   eval:
     cmd: python -m src.stages.eval -c "params.yaml"
     deps:
+    - path: data/processed/valid_x_processed.pt
+      hash: md5
+      md5: f0cd5e53a290bec980faa151ae92af15
+      size: 13171977
+    - path: data/processed/valid_y_processed.pt
+      hash: md5
+      md5: 606b246fc6aa77b668afd2553c3ccd76
+      size: 34377
     - path: models/model.pth
       hash: md5
-      md5: 87d4713af608b3cd3b3ceed367a4bac7
+      md5: 36cbe9638d288b5eab5528e79319b7ac
       size: 89851
     - path: src/stages/eval.py
       hash: md5
@@ -141,10 +149,30 @@ stages:
             linear2: 10
           learning_rate: 0.001
           momentum: 0.5
-          n_epochs: 25
+          n_epochs: 300
           log_interval: 10
     outs:
     - path: metrics.json
       hash: md5
-      md5: 389083bb60bf127007f671b5d3528545
+      md5: 8415a61e78d4364606eb61e54c14232a
       size: 55
+  submission:
+    cmd: python -m src.stages.submission -c "params.yaml"
+    deps:
+    - path: data/processed/test_processed.pt
+      hash: md5
+      md5: 90c0a529d6f622e33802cd55bac868cf
+      size: 87808768
+    - path: models/model.pth
+      hash: md5
+      md5: 36cbe9638d288b5eab5528e79319b7ac
+      size: 89851
+    - path: src/stages/submission.py
+      hash: md5
+      md5: d58defc4c99ed98f9604d2f6cf7cc59c
+      size: 3123
+    outs:
+    - path: reports/submission.csv
+      hash: md5
+      md5: fe92932d5233afb387d2e8dccd9c177b
+      size: 240909

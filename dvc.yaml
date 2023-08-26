@@ -47,6 +47,8 @@ stages:
   eval:
     cmd: python -m src.stages.eval -c "params.yaml"
     deps:
+    - data/processed/valid_x_processed.pt
+    - data/processed/valid_y_processed.pt
     - src/stages/eval.py
     - models/model.pth
     params:
@@ -55,3 +57,12 @@ stages:
     metrics:
     - metrics.json:
         cache: false
+
+  submission:
+    cmd: python -m src.stages.submission -c "params.yaml"
+    deps:
+    - data/processed/test_processed.pt
+    - src/stages/submission.py
+    - models/model.pth
+    outs:
+    - reports/submission.csv

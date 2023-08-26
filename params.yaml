@@ -6,7 +6,7 @@ base:
   device: mps
 
 data_processing:
-  split: 0.3
+  split: 0.1
 
 train:
   cudnn_enabled: False
@@ -23,7 +23,7 @@ train:
     linear2: 10
   learning_rate: 0.001
   momentum: 0.5
-  n_epochs: 25
+  n_epochs: 300
   log_interval: 10
 
 eval:
