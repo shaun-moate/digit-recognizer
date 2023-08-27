@@ -27,20 +27,38 @@ class Dataset(torch.utils.data.Dataset):
 class Net(nn.Module):
     def __init__(self, params):
         super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(1, params.train.struct.conv1, kernel_size=5)
-        self.conv2 = nn.Conv2d(params.train.struct.conv1, params.train.struct.conv2, kernel_size=5)
-        self.conv2_drop = nn.Dropout2d()
-        self.fc1 = nn.Linear(320, params.train.struct.linear1)
-        self.fc2 = nn.Linear(params.train.struct.linear1, params.train.struct.linear2)
+        # Layer 1
+        self.conv1 = nn.Conv2d(in_channels=1, out_channels=16, kernel_size=5, stride=1, padding=0)
+        self.relu1 = nn.ReLU()
+        # Layer 2
+        self.conv2 = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=5, stride=1, padding=0)
+        self.relu2 = nn.ReLU()
+        self.maxpool1 = nn.MaxPool2d(kernel_size=2)
+        # Layer 3
+        self.conv3 = nn.Conv2d(in_channels=32, out_channels=16, kernel_size=4, stride=1, padding=0)
+        self.relu3 = nn.ReLU()
+        self.maxpool2 = nn.MaxPool2d(kernel_size=2)
+
+        # Fully connected
+        self.fc1 = nn.Linear(16 * 3 * 3, 10)
 
     def forward(self, x):
-        x = F.relu(F.max_pool2d(self.conv1(x), 2))
-        x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
-        x = x.view(-1, 320)
-        x = F.relu(self.fc1(x))
-        x = F.dropout(x, training=self.training)
-        x = self.fc2(x)
-        return F.log_softmax(x, dim = 1)
+        # Layer 1
+        out = self.conv1(x)
+        out = self.relu1(out)
+        # Layer 2
+        out = self.conv2(out)
+        out = self.relu2(out)
+        out = self.maxpool1(out)
+        # Layer 3
+        out = self.conv3(out)
+        out = self.relu3(out)
+        out = self.maxpool2(out)
+        # Flatten
+        out = out.view(out.size(0), -1)
+        # Linear
+        out = self.fc1(out)
+        return F.log_softmax(out, dim = 1)
 
 def load_data(params, device):
     print("Loading the processed training data...")
@@ -90,12 +108,14 @@ if __name__ == "__main__":
 
     train_loader, validation_loader = load_data(params, device)
 
-    learning_rate = params.train.learning_rate
-    momentum = params.train.momentum
     network = Net(params)
     network.to(params.base.device)
-    optimizer = optim.SGD(network.parameters(), lr=learning_rate,
-                          momentum=momentum)
+
+    if params.train.optimizer.type == "sgd":
+      optimizer = optim.SGD(network.parameters(), lr=params.train.optimizer.learning_rate,
+                            momentum=params.train.optimizer.momentum)
+    elif params.train.optimizer.type == "adam" :
+      optimizer = optim.Adam(network.parameters(), lr=params.train.optimizer.learning_rate)
 
     n_epochs = params.train.n_epochs
     train_losses = []

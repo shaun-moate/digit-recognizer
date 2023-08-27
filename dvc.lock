@@ -17,8 +17,8 @@ stages:
       size: 76775041
     - path: src/stages/data_processing.py
       hash: md5
-      md5: 66d7bd689bd5f1eaf5885e85f96248c6
-      size: 3195
+      md5: 53cacf0aa879e6afb84bbaf93ce80ad9
+      size: 3739
     params:
       params.yaml:
         base:
@@ -28,51 +28,51 @@ stages:
           random_seed: 13
           device: mps
         data_processing:
-          split: 0.1
+          split: 0.01
     outs:
     - path: data/processed/test_processed.pt
       hash: md5
-      md5: 90c0a529d6f622e33802cd55bac868cf
+      md5: 8039e0fe9a5bbd3cf75d3ac72eea6622
       size: 87808768
     - path: data/processed/train_x_processed.pt
       hash: md5
-      md5: e2f8d0784801348b40598a4c918ed213
-      size: 118541577
+      md5: 804a7148d0bd906c617349be513ad431
+      size: 130395657
     - path: data/processed/train_y_processed.pt
       hash: md5
-      md5: 486b3dfaf9d8ae44140c445b449ab2a3
-      size: 303177
+      md5: 0f32039f6f40fe5eb50698f335e228b5
+      size: 333385
     - path: data/processed/valid_x_processed.pt
       hash: md5
-      md5: f0cd5e53a290bec980faa151ae92af15
-      size: 13171977
+      md5: abc2ac279273950a9c94e3031b593156
+      size: 1317897
     - path: data/processed/valid_y_processed.pt
       hash: md5
-      md5: 606b246fc6aa77b668afd2553c3ccd76
-      size: 34377
+      md5: 15e709183f31afa4d25764e6714bda57
+      size: 4105
   train:
     cmd: python -m src.stages.train -c "params.yaml"
     deps:
     - path: data/processed/train_x_processed.pt
       hash: md5
-      md5: e2f8d0784801348b40598a4c918ed213
-      size: 118541577
+      md5: 804a7148d0bd906c617349be513ad431
+      size: 130395657
     - path: data/processed/train_y_processed.pt
       hash: md5
-      md5: 486b3dfaf9d8ae44140c445b449ab2a3
-      size: 303177
+      md5: 0f32039f6f40fe5eb50698f335e228b5
+      size: 333385
     - path: data/processed/valid_x_processed.pt
       hash: md5
-      md5: f0cd5e53a290bec980faa151ae92af15
-      size: 13171977
+      md5: abc2ac279273950a9c94e3031b593156
+      size: 1317897
     - path: data/processed/valid_y_processed.pt
       hash: md5
-      md5: 606b246fc6aa77b668afd2553c3ccd76
-      size: 34377
+      md5: 15e709183f31afa4d25764e6714bda57
+      size: 4105
     - path: src/stages/train.py
       hash: md5
-      md5: 66fe582dbfa1847492b2940dc63c2236
-      size: 5148
+      md5: e4cd4816ba7befca3abb202b21742385
+      size: 5707
     params:
       params.yaml:
         base:
@@ -86,46 +86,47 @@ stages:
           model_path: models/model.pth
           optimizer_path: models/optimizer.pth
           data:
-            batch_size_train: 64
-            batch_size_validation: 100
+            batch_size_train: 100
+            batch_size_validation: 1000
             shuffle: true
           struct:
-            conv1: 10
-            conv2: 20
-            linear1: 50
-            linear2: 10
-          learning_rate: 0.001
-          momentum: 0.5
-          n_epochs: 300
+            conv1: 16
+            conv2: 32
+            linear1: 10
+          optimizer:
+            type: sgd
+            learning_rate: 0.01
+            momentum: 0.9
+          n_epochs: 100
           log_interval: 10
     outs:
     - path: models/model.pth
       hash: md5
-      md5: 36cbe9638d288b5eab5528e79319b7ac
-      size: 89851
+      md5: 290ffcb7fa6bccb49670d88a3591f38e
+      size: 93947
     - path: models/optimizer.pth
       hash: md5
-      md5: 89cb5559d9d607a9ffd8bbb3c546145f
-      size: 89955
+      md5: 1323bf7efaa7e0ae66754ca4e95f613a
+      size: 94371
     - path: reports/results.csv
       hash: md5
-      md5: e6b24b364720e04a297d658706f87881
-      size: 13188
+      md5: 191009386e121a844697466728cfbe6c
+      size: 4342
   eval:
     cmd: python -m src.stages.eval -c "params.yaml"
     deps:
     - path: data/processed/valid_x_processed.pt
       hash: md5
-      md5: f0cd5e53a290bec980faa151ae92af15
-      size: 13171977
+      md5: abc2ac279273950a9c94e3031b593156
+      size: 1317897
     - path: data/processed/valid_y_processed.pt
       hash: md5
-      md5: 606b246fc6aa77b668afd2553c3ccd76
-      size: 34377
+      md5: 15e709183f31afa4d25764e6714bda57
+      size: 4105
     - path: models/model.pth
       hash: md5
-      md5: 36cbe9638d288b5eab5528e79319b7ac
-      size: 89851
+      md5: 290ffcb7fa6bccb49670d88a3591f38e
+      size: 93947
     - path: src/stages/eval.py
       hash: md5
       md5: 09b4204a28dd1215ed36d444a56d6d4f
@@ -139,40 +140,41 @@ stages:
           model_path: models/model.pth
           optimizer_path: models/optimizer.pth
           data:
-            batch_size_train: 64
-            batch_size_validation: 100
+            batch_size_train: 100
+            batch_size_validation: 1000
             shuffle: true
           struct:
-            conv1: 10
-            conv2: 20
-            linear1: 50
-            linear2: 10
-          learning_rate: 0.001
-          momentum: 0.5
-          n_epochs: 300
+            conv1: 16
+            conv2: 32
+            linear1: 10
+          optimizer:
+            type: sgd
+            learning_rate: 0.01
+            momentum: 0.9
+          n_epochs: 100
           log_interval: 10
     outs:
     - path: metrics.json
       hash: md5
-      md5: 8415a61e78d4364606eb61e54c14232a
+      md5: 5bcd9d0a42a19cb5138ea37cbb880412
       size: 55
   submission:
     cmd: python -m src.stages.submission -c "params.yaml"
     deps:
     - path: data/processed/test_processed.pt
       hash: md5
-      md5: 90c0a529d6f622e33802cd55bac868cf
+      md5: 8039e0fe9a5bbd3cf75d3ac72eea6622
       size: 87808768
     - path: models/model.pth
       hash: md5
-      md5: 36cbe9638d288b5eab5528e79319b7ac
-      size: 89851
+      md5: 290ffcb7fa6bccb49670d88a3591f38e
+      size: 93947
     - path: src/stages/submission.py
       hash: md5
-      md5: d58defc4c99ed98f9604d2f6cf7cc59c
-      size: 3123
+      md5: c9f334d05e9c7d30d044f088bcc4ce81
+      size: 2536
     outs:
     - path: reports/submission.csv
       hash: md5
-      md5: fe92932d5233afb387d2e8dccd9c177b
+      md5: 44927daae13af84daa550d6b0cf21a6b
       size: 240909

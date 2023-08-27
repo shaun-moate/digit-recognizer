@@ -6,24 +6,25 @@ base:
   device: mps
 
 data_processing:
-  split: 0.1
+  split: 0.01
 
 train:
-  cudnn_enabled: False
+  cudnn_enabled: false
   model_path: models/model.pth
   optimizer_path: models/optimizer.pth
   data:
-    batch_size_train: 64
-    batch_size_validation: 100
-    shuffle: True
+    batch_size_train: 100
+    batch_size_validation: 1000
+    shuffle: true
   struct:
-    conv1: 10
-    conv2: 20
-    linear1: 50
-    linear2: 10
-  learning_rate: 0.001
-  momentum: 0.5
-  n_epochs: 300
+    conv1: 16
+    conv2: 32
+    linear1: 10
+  optimizer:
+    type: sgd
+    learning_rate: 0.01
+    momentum: 0.9
+  n_epochs: 100
   log_interval: 10
 
 eval:

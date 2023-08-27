@@ -11,20 +11,28 @@ def load_data(params):
                      delimiter=",", skiprows=1, dtype=np.float32)
     return train, test
 
-def split_data(train, params):
+def standardize(train, test):
+    train_X = train[:, 1:]
+    train_y = train[:, 0]
+    mean_px = train_X.mean().astype(np.float32)
+    std_px = train_X.std().astype(np.float32)
+    return (train_X - mean_px)/(std_px), train_y, (test - mean_px)/(std_px)
+
+def split_data(train, test, params):
     print("Splitting the data for train and validation...")
     s_size = train.shape[0] # Training set size
     v_size = int(train.shape[0]*params.data_processing.split) # Validation set size
+    print("Standardizing data...")
+    train_std, train_labels, test_std = standardize(train, test)
+    return train_std[:s_size-v_size], train_labels[:s_size-v_size], train_std[s_size-v_size:], train_labels[s_size-v_size:], test_std
 
-    return train[:s_size-v_size], train[s_size-v_size:]
-
-def tensorfy_data(train, validation, test, device):
+def tensorfy_data(train_X, train_y, validation_X, validation_y, test_X, device):
     print("Converting to Tensor...")
-    train_tensor = torch.tensor(train[:, 1:], device=device)
-    train_labels = torch.tensor(train[:, 0], device=device).type(torch.LongTensor)
-    validation_tensor = torch.tensor(validation[:, 1:], device=device)
-    validation_labels = torch.tensor(validation[:, 0], device=device).type(torch.LongTensor)
-    test_tensor = torch.tensor(test)
+    train_tensor = torch.tensor(train_X, device=device)
+    train_labels = torch.tensor(train_y, device=device).type(torch.LongTensor)
+    validation_tensor = torch.tensor(validation_X, device=device)
+    validation_labels = torch.tensor(validation_y, device=device).type(torch.LongTensor)
+    test_tensor = torch.tensor(test_X)
     print("Reshaping Tensors...")
     train_reshaped = train_tensor.resize_(len(train_tensor), 1, 28, 28)
     validation_reshaped = validation_tensor.resize_(len(validation_tensor), 1, 28, 28)
@@ -58,9 +66,9 @@ if __name__ == "__main__":
 
     np.random.seed(params.base.random_seed)
     train, test = load_data(params)
-    train, validation = split_data(train, params)
-    train_x, train_y, valid_x, valid_y, test = tensorfy_data(train, validation, test, device)
-    save_processed_data(train_x, train_y, valid_x, valid_y, test, params)
+    train_X, train_y, validation_X, validation_y, test_X = split_data(train, test, params)
+    train_X, train_y, validation_X, validation_y, test_X = tensorfy_data(train_X, train_y, validation_X, validation_y, test_X, device)
+    save_processed_data(train_X, train_y, validation_X, validation_y, test_X, params)
     print("---------------------------------------------------------------")
     print(" DATA PROCESSING - COMPLETE -----------------------------------")
     print("---------------------------------------------------------------")
