@@ -3,28 +3,46 @@ import numpy as np
 import argparse
 from src.utils.load_params import load_params
 
+
 def load_data(params):
     print("Loading text from CSVs...")
-    train = np.loadtxt(params.base.raw_data_dir + "train.csv",
-                     delimiter=",", skiprows=1, dtype=np.float32)
-    test = np.loadtxt(params.base.raw_data_dir + "test.csv",
-                     delimiter=",", skiprows=1, dtype=np.float32)
+    train = np.loadtxt(
+        params.base.raw_data_dir + "train.csv",
+        delimiter=",",
+        skiprows=1,
+        dtype=np.float32,
+    )
+    test = np.loadtxt(
+        params.base.raw_data_dir + "test.csv",
+        delimiter=",",
+        skiprows=1,
+        dtype=np.float32,
+    )
     return train, test
+
 
 def standardize(train, test):
     train_X = train[:, 1:]
     train_y = train[:, 0]
     mean_px = train_X.mean().astype(np.float32)
     std_px = train_X.std().astype(np.float32)
-    return (train_X - mean_px)/(std_px), train_y, (test - mean_px)/(std_px)
+    return (train_X - mean_px) / (std_px), train_y, (test - mean_px) / (std_px)
+
 
 def split_data(train, test, params):
     print("Splitting the data for train and validation...")
-    s_size = train.shape[0] # Training set size
-    v_size = int(train.shape[0]*params.data_processing.split) # Validation set size
+    s_size = train.shape[0]  # Training set size
+    v_size = int(train.shape[0] * params.data_processing.split)  # Validation set size
     print("Standardizing data...")
     train_std, train_labels, test_std = standardize(train, test)
-    return train_std[:s_size-v_size], train_labels[:s_size-v_size], train_std[s_size-v_size:], train_labels[s_size-v_size:], test_std
+    return (
+        train_std[: s_size - v_size],
+        train_labels[: s_size - v_size],
+        train_std[s_size - v_size :],
+        train_labels[s_size - v_size :],
+        test_std,
+    )
+
 
 def tensorfy_data(train_X, train_y, validation_X, validation_y, test_X, device):
     print("Converting to Tensor...")
@@ -37,7 +55,14 @@ def tensorfy_data(train_X, train_y, validation_X, validation_y, test_X, device):
     train_reshaped = train_tensor.resize_(len(train_tensor), 1, 28, 28)
     validation_reshaped = validation_tensor.resize_(len(validation_tensor), 1, 28, 28)
     test_reshaped = test_tensor.resize_(len(test_tensor), 1, 28, 28)
-    return train_reshaped, train_labels, validation_reshaped, validation_labels, test_reshaped
+    return (
+        train_reshaped,
+        train_labels,
+        validation_reshaped,
+        validation_labels,
+        test_reshaped,
+    )
+
 
 def save_processed_data(train_x, train_y, valid_x, valid_y, test, params):
     print("Saving Tensors to File...")
@@ -66,10 +91,13 @@ if __name__ == "__main__":
 
     np.random.seed(params.base.random_seed)
     train, test = load_data(params)
-    train_X, train_y, validation_X, validation_y, test_X = split_data(train, test, params)
-    train_X, train_y, validation_X, validation_y, test_X = tensorfy_data(train_X, train_y, validation_X, validation_y, test_X, device)
+    train_X, train_y, validation_X, validation_y, test_X = split_data(
+        train, test, params
+    )
+    train_X, train_y, validation_X, validation_y, test_X = tensorfy_data(
+        train_X, train_y, validation_X, validation_y, test_X, device
+    )
     save_processed_data(train_X, train_y, validation_X, validation_y, test_X, params)
     print("---------------------------------------------------------------")
     print(" DATA PROCESSING - COMPLETE -----------------------------------")
     print("---------------------------------------------------------------")
-

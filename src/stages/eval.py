@@ -7,11 +7,13 @@ from src.utils.data_loader import data_loader
 from src.utils.evaluate import evaluate
 from src.stages.train import Net, Dataset
 
+
 def load_evaluation_data(device):
     print("Loading the processed evaluation data...")
     validation_data = Dataset("valid_x_processed.pt", "valid_y_processed.pt", params)
     evaluation_loader = data_loader(validation_data, params, device)
     return evaluation_loader
+
 
 if __name__ == "__main__":
     print("---------------------------------------------------------------")
